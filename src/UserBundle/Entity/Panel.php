@@ -996,4 +996,52 @@ class Panel {
         return $this->etat;
     }
 
+
+    /**
+     * Set dateInscription
+     *
+     * @param \DateTime $dateInscription
+     *
+     * @return Panel
+     */
+    public function setDateInscription($dateInscription)
+    {
+        $this->dateInscription = $dateInscription;
+
+        return $this;
+    }
+
+    /**
+     * Get dateInscription
+     *
+     * @return \DateTime
+     */
+    public function getDateInscription()
+    {
+        return $this->dateInscription;
+    }
+
+    /**
+     * Set dateDerniereMiseAJour
+     *
+     * @param \DateTime $dateDerniereMiseAJour
+     *
+     * @return Panel
+     */
+    public function setDateDerniereMiseAJour($dateDerniereMiseAJour)
+    {
+        $this->dateDerniereMiseAJour = $dateDerniereMiseAJour;
+
+        return $this;
+    }
+
+    /**
+     * Get dateDerniereMiseAJour
+     *
+     * @return \DateTime
+     */
+    public function getDateDerniereMiseAJour()
+    {
+        return $this->dateDerniereMiseAJour;
+    }
 }

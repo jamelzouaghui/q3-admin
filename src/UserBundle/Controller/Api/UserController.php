@@ -23,9 +23,9 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use UserBundle\Entity\Media;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Filesystem\Filesystem;
+
 
 /**
  * Admin Controller
@@ -97,14 +97,13 @@ class UserController extends Controller {
     public function createUser(Request $request) {
 
         $data = json_decode($request->getContent(), true);
-        
-       
+
 
         $em = $this->getDoctrine()->getManager();
         $entity = $this->get('jms_serializer')->deserialize(json_encode($data), 'UserBundle\Entity\User', 'json');
         $file1 = $data['photo'];
-        $file = json_encode($request->request->get('photo'));
-        
+        $file = json_encode($request->request->get('file'));
+
         $filetype = $file1['filetype'];
 
         $type = strchr($filetype, "/");
@@ -120,7 +119,7 @@ class UserController extends Controller {
         } catch (FileException $e) {
             // ... handle exception if something happens during file upload
         }
-       $entity->setPhoto($fileName);
+        $entity->setPhoto($fileName);
         $entity->setEnabled('1');
         $entity->setMobilePhone('23445465');
         $entity->setProfession('testeur');
@@ -208,30 +207,27 @@ class UserController extends Controller {
      * @Method({"POST"})
      */
     public function createMedia(Request $request) {
+
         $em = $this->getDoctrine()->getManager();
-        $file = $request->files->get('file');
-        $dimensions = array();
-        $dimensions['filename'] = false;
+        //$user = $this->getUser();
+        $user = $this->getDoctrine()->getRepository('UserBundle:User')->findBy(array('id' => $this->getUser()->getId()));
+        
         $entity = new Media();
-        $extension = $file->guessExtension();
-        $dimensions['name'] = sha1(uniqid(mt_rand(), true)) . ".$extension";
 
-        $dimensions['directory'] = $entity->getTempRootDir();
+        $file = $request->files->get('image');
 
-        $assetUrl = $entity->getTempDir() . "/" . $dimensions['name'];
-
-
-        $dimensions['asset'] = $this->container->get('assets.packages')->getUrl($assetUrl);
-        dump($dimensions['asset']);
-        dump($dimensions['directory']);
-        die();
-        $file->move($dimensions['directory'], $dimensions['name']);
-        $entity->setName($dimensions['name']);
-
-
-
-
+        $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
+        try {
+            $file->move($this->getParameter('users_directory'), $fileName );
+        } catch (FileException $e) {
+            // ... handle exception if something happens during file upload
+        }
+        
+        $entity->setName($fileName);
+        $user->setPhoto($entity);
+        $em->persist($user);
         $em->persist($entity);
+        
 
         $em->flush();
         $response = array(

@@ -1,4 +1,5 @@
 <?php
+
 // src/UserBundle/Entity/User.php
 
 namespace UserBundle\Entity;
@@ -17,8 +18,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\MappedSuperclass
  * @JMS\ExclusionPolicy("all")
  */
-class User extends BaseUser
-{
+class User extends BaseUser {
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -26,12 +27,11 @@ class User extends BaseUser
      */
     protected $id;
 
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
         // your own logic
     }
-    
+
     /**
      * exposed
      * @Assert\Choice(choices = {"Mr", "Mme", "Mlle","Dr","Prof"}, message = "Merci de choisir la civilté.")
@@ -107,6 +107,7 @@ class User extends BaseUser
      * @var string
      */
     protected $usernameCanonical;
+
     /**
      * @var string
      *
@@ -118,25 +119,15 @@ class User extends BaseUser
      * @var string
      */
     protected $emailCanonical;
-   /**
-     * @ORM\Column(type="string")
-     * @Assert\File(maxSize="10000000")
-     * @Assert\NotBlank(message="Please, upload the product brochure as a PDF file.")
-     *
+    
+    
+     /**
+     * @ORM\OneToOne(targetEntity="Media",cascade={"persist","remove"} )
+     * @ORM\JoinColumn(name="photo_id", referencedColumnName="id" , nullable=true)
      */
-    private $photo;
-
-    public function getPhoto()
-    {
-        return $this->photo;
-    }
-
-    public function setPhoto($photo)
-    {
-        $this->photo = $photo;
-
-        return $this;
-    }
+    protected $photo;
+    
+    
 
     /**
      * Set civility
@@ -145,8 +136,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setCivility($civility)
-    {
+    public function setCivility($civility) {
         $this->civility = $civility;
 
         return $this;
@@ -157,8 +147,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getCivility()
-    {
+    public function getCivility() {
         return $this->civility;
     }
 
@@ -169,8 +158,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setFirstname($firstname)
-    {
+    public function setFirstname($firstname) {
         $this->firstname = $firstname;
 
         return $this;
@@ -181,8 +169,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getFirstname()
-    {
+    public function getFirstname() {
         return $this->firstname;
     }
 
@@ -193,8 +180,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setLastname($lastname)
-    {
+    public function setLastname($lastname) {
         $this->lastname = $lastname;
 
         return $this;
@@ -205,8 +191,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getLastname()
-    {
+    public function getLastname() {
         return $this->lastname;
     }
 
@@ -217,8 +202,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setGender($gender)
-    {
+    public function setGender($gender) {
         $this->gender = $gender;
 
         return $this;
@@ -229,8 +213,7 @@ class User extends BaseUser
      *
      * @return integer
      */
-    public function getGender()
-    {
+    public function getGender() {
         return $this->gender;
     }
 
@@ -241,8 +224,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setBirthDate($birthDate)
-    {
+    public function setBirthDate($birthDate) {
         $this->birthDate = $birthDate;
 
         return $this;
@@ -253,8 +235,7 @@ class User extends BaseUser
      *
      * @return \DateTime
      */
-    public function getBirthDate()
-    {
+    public function getBirthDate() {
         return $this->birthDate;
     }
 
@@ -262,11 +243,10 @@ class User extends BaseUser
      * Set phone
      *
      * @param string $phone
-     *$profession
+     * $profession
      * @return User
      */
-    public function setPhone($phone)
-    {
+    public function setPhone($phone) {
         $this->phone = $phone;
 
         return $this;
@@ -277,8 +257,7 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getPhone()
-    {
+    public function getPhone() {
         return $this->phone;
     }
 
@@ -289,8 +268,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setMobilePhone($mobilePhone)
-    {
+    public function setMobilePhone($mobilePhone) {
         $this->mobilePhone = $mobilePhone;
 
         return $this;
@@ -301,34 +279,9 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getMobilePhone()
-    {
+    public function getMobilePhone() {
         return $this->mobilePhone;
     }
-
-//    /**
-//     * Set photo
-//     *
-//     * @param \UserBundle\Entity\Media $photo
-//     *
-//     * @return User
-//     */
-//    public function setPhoto(\UserBundle\Entity\Media $photo = null)
-//    {
-//        $this->photo = $photo;
-//
-//        return $this;
-//    }
-//
-//    /**
-//     * Get photo
-//     *
-//     * @return \UserBundle\Entity\Media
-//     */
-//    public function getPhoto()
-//    {
-//        return $this->photo;
-//    }
 
     /**
      * Set profession
@@ -337,8 +290,7 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function setProfession($profession)
-    {
+    public function setProfession($profession) {
         $this->profession = $profession;
 
         return $this;
@@ -349,8 +301,32 @@ class User extends BaseUser
      *
      * @return string
      */
-    public function getProfession()
-    {
+    public function getProfession() {
         return $this->profession;
+    }
+
+
+    /**
+     * Set photo
+     *
+     * @param \UserBundle\Entity\Media $photo
+     *
+     * @return User
+     */
+    public function setPhoto(\UserBundle\Entity\Media $photo = null)
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+
+    /**
+     * Get photo
+     *
+     * @return \UserBundle\Entity\Media
+     */
+    public function getPhoto()
+    {
+        return $this->photo;
     }
 }

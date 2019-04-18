@@ -96,4 +96,28 @@ class Contact extends User
     }
 
     
+
+    /**
+     * Set photo
+     *
+     * @param \UserBundle\Entity\Media $photo
+     *
+     * @return Contact
+     */
+    public function setPhoto(\UserBundle\Entity\Media $photo = null)
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+
+    /**
+     * Get photo
+     *
+     * @return \UserBundle\Entity\Media
+     */
+    public function getPhoto()
+    {
+        return $this->photo;
+    }
 }
