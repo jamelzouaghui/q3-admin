@@ -26,7 +26,6 @@ use Symfony\Component\HttpFoundation\Response;
 use UserBundle\Entity\Media;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
-
 /**
  * Admin Controller
  * @author zouaghui jamel
@@ -97,29 +96,33 @@ class UserController extends Controller {
     public function createUser(Request $request) {
 
         $data = json_decode($request->getContent(), true);
-
-
         $em = $this->getDoctrine()->getManager();
-        $entity = $this->get('jms_serializer')->deserialize(json_encode($data), 'UserBundle\Entity\User', 'json');
-        $file1 = $data['photo'];
-        $file = json_encode($request->request->get('file'));
-
-        $filetype = $file1['filetype'];
-
-        $type = strchr($filetype, "/");
-
-        $typeImage = str_replace("/", "", $type);
+       
+        $media = new Media();
 
 
-        $fileName = $this->generateUniqueFileName() . '.' . $typeImage;
+        $file = $request->files->get('image');
+        if ($file) {
+            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
+            try {
+                $file->move($this->getParameter('users_directory'), $fileName);
+            } catch (FileException $e) {
+                // ... handle exception if something happens during file upload
+            }
 
-
-        try {
-            $file->move($this->getParameter('users_directory'), $fileName);
-        } catch (FileException $e) {
-            // ... handle exception if something happens during file upload
+            $media->setName($fileName);
+            
         }
-        $entity->setPhoto($fileName);
+       
+       
+        
+        
+        
+        
+        
+        
+        $entity = $this->get('jms_serializer')->deserialize(json_encode($data), 'UserBundle\Entity\User', 'json');
+         $entity->setPhoto($media);
         $entity->setEnabled('1');
         $entity->setMobilePhone('23445465');
         $entity->setProfession('testeur');
@@ -210,26 +213,27 @@ class UserController extends Controller {
 
         $em = $this->getDoctrine()->getManager();
         //$user = $this->getUser();
-        $user = $this->getDoctrine()->getRepository('UserBundle:User')->findBy(array('id' => $this->getUser()->getId()));
-        
+        $user = $this->getDoctrine()->getRepository('UserBundle:User')->find($this->getUser()->getId());
+
         $entity = new Media();
 
+
         $file = $request->files->get('image');
+        if ($file) {
+            $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
+            try {
+                $file->move($this->getParameter('users_directory'), $fileName);
+            } catch (FileException $e) {
+                // ... handle exception if something happens during file upload
+            }
 
-        $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
-        try {
-            $file->move($this->getParameter('users_directory'), $fileName );
-        } catch (FileException $e) {
-            // ... handle exception if something happens during file upload
+            $entity->setName($fileName);
+            
         }
-        
-        $entity->setName($fileName);
         $user->setPhoto($entity);
-        $em->persist($user);
-        $em->persist($entity);
-        
-
+       
         $em->flush();
+
         $response = array(
             'code' => 0,
             'message' => 'User created!',
