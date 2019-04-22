@@ -60,6 +60,7 @@ class UserController extends Controller {
 
 
         $data = $this->get('jms_serializer')->serialize($users, 'json');
+  
 
         $response = array(
             'code' => 0,
@@ -95,13 +96,15 @@ class UserController extends Controller {
      */
     public function createUser(Request $request) {
 
-        $data = json_decode($request->getContent(), true);
+        //$data = json_decode($request->getContent(), true);
         $em = $this->getDoctrine()->getManager();
        
         $media = new Media();
 
 
         $file = $request->files->get('image');
+        $data= json_decode($request->request->get('formModel'));
+    
         if ($file) {
             $fileName = $this->generateUniqueFileName() . '.' . $file->guessExtension();
             try {
@@ -114,18 +117,12 @@ class UserController extends Controller {
             
         }
        
-       
-        
-        
-        
-        
-        
-        
         $entity = $this->get('jms_serializer')->deserialize(json_encode($data), 'UserBundle\Entity\User', 'json');
-         $entity->setPhoto($media);
-        $entity->setEnabled('1');
-        $entity->setMobilePhone('23445465');
-        $entity->setProfession('testeur');
+        
+       
+        $entity->setPhoto($media);
+        $entity->setEnabled('0');
+        $entity->setMobilePhone($data->mobilePhone);
 
         $em->persist($entity);
         $em->flush();

@@ -4,10 +4,11 @@
 
 namespace UserBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
-use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @ORM\Entity
@@ -109,9 +110,11 @@ class User extends BaseUser {
     protected $usernameCanonical;
 
     /**
+     * exposed
      * @var string
      *
      * @ORM\Column(name="profession", type="string", length=255)
+     * @JMS\Expose
      */
     private $profession;
 
@@ -119,15 +122,32 @@ class User extends BaseUser {
      * @var string
      */
     protected $emailCanonical;
-    
-    
-     /**
+
+    /**
+     * exposed
      * @ORM\OneToOne(targetEntity="Media",cascade={"persist","remove"} )
      * @ORM\JoinColumn(name="photo_id", referencedColumnName="id" , nullable=true)
+     * @JMS\Expose
      */
     protected $photo;
-    
-    
+
+    /**
+     * exposed
+     * @var DateTime
+     *
+     * @ORM\Column(name="createdAt", type="datetime")
+     * @JMS\Expose
+     */
+    protected $createdAt;
+
+    /**
+     * exposed
+     * @var DateTime
+     *
+     * @ORM\Column(name="updatedAt", type="datetime")
+     * @JMS\Expose
+     */
+    protected $updatedAt;
 
     /**
      * Set civility
@@ -220,7 +240,7 @@ class User extends BaseUser {
     /**
      * Set birthDate
      *
-     * @param \DateTime $birthDate
+     * @param DateTime $birthDate
      *
      * @return User
      */
@@ -233,7 +253,7 @@ class User extends BaseUser {
     /**
      * Get birthDate
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getBirthDate() {
         return $this->birthDate;
@@ -305,16 +325,14 @@ class User extends BaseUser {
         return $this->profession;
     }
 
-
     /**
      * Set photo
      *
-     * @param \UserBundle\Entity\Media $photo
+     * @param Media $photo
      *
      * @return User
      */
-    public function setPhoto(\UserBundle\Entity\Media $photo = null)
-    {
+    public function setPhoto(Media $photo = null) {
         $this->photo = $photo;
 
         return $this;
@@ -323,10 +341,66 @@ class User extends BaseUser {
     /**
      * Get photo
      *
-     * @return \UserBundle\Entity\Media
+     * @return Media
      */
-    public function getPhoto()
-    {
+    public function getPhoto() {
         return $this->photo;
     }
+
+    /**
+     * Set createdAt.
+     *
+     * @param DateTime $createdAt
+     *
+     * @return User
+     */
+    public function setCreatedAt($createdAt) {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt.
+     *
+     * @return DateTime
+     */
+    public function getCreatedAt() {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt.
+     *
+     * @param DateTime $updatedAt
+     *
+     * @return User
+     */
+    public function setUpdatedAt($updatedAt) {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt.
+     *
+     * @return DateTime
+     */
+    public function getUpdatedAt() {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function updatedTimestamps() {
+        $this->setUpdatedAt(new DateTime('now'));
+
+        if ($this->getCreatedAt() == null) {
+            $this->setCreatedAt(new DateTime('now'));
+        }
+    }
+
 }
