@@ -95,8 +95,6 @@ class UserController extends Controller {
      * @Method({"POST"})
      */
     public function createUser(Request $request) {
-
-        //$data = json_decode($request->getContent(), true);
         $em = $this->getDoctrine()->getManager();
        
         $media = new Media();
