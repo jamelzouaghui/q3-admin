@@ -83,6 +83,12 @@ class FocusGroupe
      * @ORM\Column(name="photoGroupe", type="string", length=255,nullable= true)
      */
     private $photoGroupe;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="photoCouverture", type="string", length=255,nullable= true)
+     */
+    private $photoCouverture;
 
     /**
      * @var string
@@ -338,6 +344,37 @@ class FocusGroupe
     public function getPhotoGroupe()
     {
         return $this->photoGroupe;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    /**
+     * Set photoCouverture
+     *
+     * @param string $photoCouverture
+     *
+     * @return FocusCouverture
+     */
+    public function setPhotoCouverture($photoCouverture)
+    {
+        $this->photoCouverture = $photoCouverture;
+
+        return $this;
+    }
+
+    /**
+     * Get photoCouverture
+     *
+     * @return string
+     */
+    public function getPhotoCouverture()
+    {
+        return $this->photoCouverture;
     }
 
     /**

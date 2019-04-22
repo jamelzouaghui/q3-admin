@@ -114,8 +114,8 @@ class FocusGroupeController extends Controller {
                 // ... handle exception if something happens during file upload
             }
 
-            //$focusGroupe->setPhotoCouverture($fileNameCouverture);
-            $focusGroupe->setPhotoGroupe($fileNameCouverture);
+            $focusGroupe->setPhotoCouverture($fileNameCouverture);
+            $focusGroupe->setPhotoGroupe($fileNameGroupe);
             //$focusGroupe->setName($fileNameCouverture);
             
       
