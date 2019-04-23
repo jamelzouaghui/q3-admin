@@ -45,7 +45,7 @@ class FocusGroupeController extends Controller {
     public function listContacts() {
 
         $focusGroupes = $this->getDoctrine()->getRepository('UserBundle:FocusGroupe')->findAll();
-
+        
         if (!count($focusGroupes)) {
             $response = array(
                 'code' => 1,
@@ -94,41 +94,57 @@ class FocusGroupeController extends Controller {
      * @Method({"POST"})
      */
     public function createFocusGroupe(Request $request) {
-         $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
         $fileCouverture = $request->files->get('imageCouverture');
         $fileGroupe = $request->files->get('imageGroupe');
         $fileAnimateur = $request->files->get('imageAnimateur');
-        $data= json_decode($request->request->get('formModel'));
-    
-        
-        $focusGroupe = $this->get('jms_serializer')->deserialize(json_encode($data), 'UserBundle\Entity\FocusGroupe', 'json');
-      
-            $fileNameCouverture = $this->generateUniqueFileName() . '.' . $fileCouverture->guessExtension();
-            $fileNameGroupe = $this->generateUniqueFileName() . '.' . $fileGroupe->guessExtension();
-            $fileNameAnimateur = $this->generateUniqueFileName() . '.' . $fileAnimateur->guessExtension();
-            try {
-                $fileCouverture->move($this->getParameter('users_directory'), $fileNameCouverture);
-                  $fileGroupe->move($this->getParameter('users_directory'), $fileNameGroupe);
-                    $fileAnimateur->move($this->getParameter('users_directory'), $fileNameAnimateur);
-            } catch (FileException $e) {
-                // ... handle exception if something happens during file upload
-            }
+        $data = json_decode($request->request->get('formModel'));
 
-            $focusGroupe->setPhotoCouverture($fileNameCouverture);
-            $focusGroupe->setPhotoGroupe($fileNameGroupe);
-            //$focusGroupe->setName($fileNameCouverture);
-            
-      
+        $animateur = $data->animateur;
+        $newanimateur = new Animateur();
+        $focusGroupe = $this->get('jms_serializer')->deserialize(json_encode($data), 'UserBundle\Entity\FocusGroupe', 'json');
+
+
+
+
+
+       
+
+        $fileNameCouverture = $this->generateUniqueFileName() . '.' . $fileCouverture->guessExtension();
+        $fileNameGroupe = $this->generateUniqueFileName() . '.' . $fileGroupe->guessExtension();
+        $fileNameAnimateur = $this->generateUniqueFileName() . '.' . $fileAnimateur->guessExtension();
+        try {
+            $fileCouverture->move($this->getParameter('users_directory'), $fileNameCouverture);
+            $fileGroupe->move($this->getParameter('users_directory'), $fileNameGroupe);
+            $fileAnimateur->move($this->getParameter('users_directory'), $fileNameAnimateur);
+        } catch (FileException $e) {
+            // ... handle exception if something happens during file upload
+        }
+        $media = new \UserBundle\Entity\Media();
+        $media->setName($fileNameAnimateur);
+        $newanimateur->setFirstname($animateur->firstname);
+        $newanimateur->setLastname($animateur->firstname);
+        $newanimateur->setProfession($animateur->profession);
+        $newanimateur->setPhoto($media);
+
         
-        dump($focusGroupe);
-die();
-        
-        
-        
-        
-        
-        dump($focusGroupe);
-        die();
+        $focusGroupe->setPhotoCouverture($fileNameCouverture);
+        $focusGroupe->setPhotoGroupe($fileNameGroupe);
+        $focusGroupe->setStatut(5);
+        $focusGroupe->setOldStatut(0);
+        $focusGroupe->setNom($data->nom);
+        $focusGroupe->setRaison($data->raison);
+        $focusGroupe->setDescription1($data->description1);
+        $focusGroupe->setDescription2($data->description2);
+        $focusGroupe->setAnimateur($newanimateur);
+
+        $focusGroupe->setCreatedBy($this->getUser());
+        $em->persist($focusGroupe);
+        $em->persist($newanimateur);
+          $em->persist($media);
+;
+        $em->flush();
+
 
         $response = array(
             'code' => 0,
@@ -139,8 +155,7 @@ die();
 
         return new JsonResponse($response, Response::HTTP_CREATED);
     }
-    
-    
+
     /**
      * @return string
      */

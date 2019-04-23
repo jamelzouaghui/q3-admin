@@ -3,44 +3,83 @@
 namespace UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * Animateur
  *
  * @ORM\Table(name="animateur")
  * @ORM\Entity(repositoryClass="UserBundle\Repository\AnimateurRepository")
+ * @ORM\HasLifecycleCallbacks
+ * @ORM\MappedSuperclass
+ * @JMS\ExclusionPolicy("all")
  */
 class Animateur {
 
     /**
+     * exposed
      * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     *  @JMS\Expose
      */
     private $id;
 
     /**
+     * exposed
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", length=255)
+     *  @JMS\Expose
      */
     private $firstname;
 
     /**
+     * exposed
      * @var string
-     *
      * @ORM\Column(name="lastname", type="string", length=255)
+     * @JMS\Expose
      */
     private $lastname;
 
     /**
+     * exposed
      * @var string
-     *
      * @ORM\Column(name="profession", type="string", length=255)
+     * @JMS\Expose
      */
     private $profession;
+    
+  
+    /**
+     * exposed
+     * @ORM\OneToOne(targetEntity="Media",cascade={"persist","remove"} )
+     * @ORM\JoinColumn(name="photo_id", referencedColumnName="id" , nullable=true)
+     * @JMS\Expose
+     */
+    protected $photo;
+    
+    /**
+     * exposed
+     * @var DateTime
+     *
+     * @ORM\Column(name="createdAt", type="datetime")
+     * @JMS\Expose
+     */
+    protected $createdAt;
+
+    /**
+     * exposed
+     * @var DateTime
+     *
+     * @ORM\Column(name="updatedAt", type="datetime")
+     * @JMS\Expose
+     */
+    protected $updatedAt;
 
     
 
@@ -119,28 +158,82 @@ class Animateur {
         return $this->profession;
     }
 
-
-    /**
-     * Set focusgroupe
+     /**
+     * Set photo
      *
-     * @param \UserBundle\Entity\FocusGroupe $focusgroupe
+     * @param Media $photo
      *
-     * @return Animateur
+     * @return User
      */
-    public function setFocusgroupe(\UserBundle\Entity\FocusGroupe $focusgroupe = null)
-    {
-        $this->focusgroupe = $focusgroupe;
+    public function setPhoto(Media $photo = null) {
+        $this->photo = $photo;
 
         return $this;
     }
 
     /**
-     * Get focusgroupe
+     * Get photo
      *
-     * @return \UserBundle\Entity\FocusGroupe
+     * @return Media
      */
-    public function getFocusgroupe()
-    {
-        return $this->focusgroupe;
+    public function getPhoto() {
+        return $this->photo;
     }
+    
+     /**
+     * Set createdAt.
+     *
+     * @param DateTime $createdAt
+     *
+     * @return User
+     */
+    public function setCreatedAt($createdAt) {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * Get createdAt.
+     *
+     * @return DateTime
+     */
+    public function getCreatedAt() {
+        return $this->createdAt;
+    }
+
+    /**
+     * Set updatedAt.
+     *
+     * @param DateTime $updatedAt
+     *
+     * @return User
+     */
+    public function setUpdatedAt($updatedAt) {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updatedAt.
+     *
+     * @return DateTime
+     */
+    public function getUpdatedAt() {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function updatedTimestamps() {
+        $this->setUpdatedAt(new \DateTime('now'));
+
+        if ($this->getCreatedAt() == null) {
+            $this->setCreatedAt(new \DateTime('now'));
+        }
+    }
+
 }

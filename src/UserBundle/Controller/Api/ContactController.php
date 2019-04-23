@@ -168,10 +168,6 @@ class ContactController extends Controller {
      * @Method({"POST"})
      */
     public function createContact(Request $request) {
-//        $em = $this->getDoctrine()->getManager();
-//        $data = json_decode($request->getContent(), true);
-
-
         $data = $request->getContent();
         $em = $this->getDoctrine()->getManager();
         $entity = $this->get('jms_serializer')->deserialize($data, 'UserBundle\Entity\Panel', 'json');

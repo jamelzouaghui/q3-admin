@@ -64,10 +64,10 @@ class Animateur extends \UserBundle\Entity\Animateur implements \Doctrine\ORM\Pr
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'UserBundle\\Entity\\Animateur' . "\0" . 'id', '' . "\0" . 'UserBundle\\Entity\\Animateur' . "\0" . 'firstname', '' . "\0" . 'UserBundle\\Entity\\Animateur' . "\0" . 'lastname', '' . "\0" . 'UserBundle\\Entity\\Animateur' . "\0" . 'profession'];
+            return ['__isInitialized__', '' . "\0" . 'UserBundle\\Entity\\Animateur' . "\0" . 'id', '' . "\0" . 'UserBundle\\Entity\\Animateur' . "\0" . 'firstname', '' . "\0" . 'UserBundle\\Entity\\Animateur' . "\0" . 'lastname', '' . "\0" . 'UserBundle\\Entity\\Animateur' . "\0" . 'profession', 'photo', 'createdAt', 'updatedAt'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'UserBundle\\Entity\\Animateur' . "\0" . 'id', '' . "\0" . 'UserBundle\\Entity\\Animateur' . "\0" . 'firstname', '' . "\0" . 'UserBundle\\Entity\\Animateur' . "\0" . 'lastname', '' . "\0" . 'UserBundle\\Entity\\Animateur' . "\0" . 'profession'];
+        return ['__isInitialized__', '' . "\0" . 'UserBundle\\Entity\\Animateur' . "\0" . 'id', '' . "\0" . 'UserBundle\\Entity\\Animateur' . "\0" . 'firstname', '' . "\0" . 'UserBundle\\Entity\\Animateur' . "\0" . 'lastname', '' . "\0" . 'UserBundle\\Entity\\Animateur' . "\0" . 'profession', 'photo', 'createdAt', 'updatedAt'];
     }
 
     /**
@@ -257,23 +257,78 @@ class Animateur extends \UserBundle\Entity\Animateur implements \Doctrine\ORM\Pr
     /**
      * {@inheritDoc}
      */
-    public function setFocusgroupe(\UserBundle\Entity\FocusGroupe $focusgroupe = NULL)
+    public function setPhoto(\UserBundle\Entity\Media $photo = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setFocusgroupe', [$focusgroupe]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPhoto', [$photo]);
 
-        return parent::setFocusgroupe($focusgroupe);
+        return parent::setPhoto($photo);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getFocusgroupe()
+    public function getPhoto()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFocusgroupe', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPhoto', []);
 
-        return parent::getFocusgroupe();
+        return parent::getPhoto();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCreatedAt($createdAt)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreatedAt', [$createdAt]);
+
+        return parent::setCreatedAt($createdAt);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCreatedAt()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCreatedAt', []);
+
+        return parent::getCreatedAt();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUpdatedAt', [$updatedAt]);
+
+        return parent::setUpdatedAt($updatedAt);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUpdatedAt()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUpdatedAt', []);
+
+        return parent::getUpdatedAt();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function updatedTimestamps()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'updatedTimestamps', []);
+
+        return parent::updatedTimestamps();
     }
 
 }
